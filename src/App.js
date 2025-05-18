@@ -4,12 +4,19 @@ import SubmitClaim from "./SubmitClaim";
 import AllClaims from "./AllClaims";
 import HealthInsurance from "./abi/HealthInsurance.json";
 
-const contractAddress = "0xCb7B19B5B2D8117e815566A59Fc9596952c17273"; // deployed address
+const contractAddress = "0xCb7B19B5B2D8117e815566A59Fc9596952c17273";
 
 function App() {
   const [contract, setContract] = useState(null);
   const [signer, setSigner] = useState(null);
-  const [totalClaims, setTotalClaims] = useState(0); // new state
+  const [totalClaims, setTotalClaims] = useState(0);
+
+  const fetchTotalClaims = async (contractInstance) => {
+    if (contractInstance) {
+      const count = await contractInstance.getTotalClaims();
+      setTotalClaims(count.toNumber());
+    }
+  };
 
   useEffect(() => {
     const init = async () => {
@@ -19,27 +26,18 @@ function App() {
       const contractInstance = new ethers.Contract(contractAddress, HealthInsurance.abi, signerInstance);
       setContract(contractInstance);
       setSigner(signerInstance);
-
-      // ✅ Fetch total claims after contract is connected
-      try {
-        const count = await contractInstance.getTotalClaims();
-        setTotalClaims(count.toString());
-        console.log("Total claims:", count.toString());
-      } catch (err) {
-        console.error("Error fetching total claims:", err);
-      }
+      fetchTotalClaims(contractInstance); // initial load
     };
-
     init();
   }, []);
 
   return (
     <div>
       <h1>Health Insurance DApp</h1>
-      <p>Total Claims Submitted: {totalClaims}</p> {/* ✅ Show the value */}
       {contract && signer ? (
         <>
-          <SubmitClaim contract={contract} signer={signer} />
+          <p><strong>Total Claims Submitted:</strong> {totalClaims}</p>
+          <SubmitClaim contract={contract} signer={signer} onClaimSubmitted={() => fetchTotalClaims(contract)} />
           <hr />
           <AllClaims contract={contract} />
         </>
