@@ -2,7 +2,15 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
+
 import reportWebVitals from './reportWebVitals';
+
+import HealthInsurance from "./abi/HealthInsurance.json";
+
+
+// Export only the ABI part
+export default HealthInsurance.abi;
+
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
