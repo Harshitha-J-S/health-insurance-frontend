@@ -3,6 +3,8 @@ import { ethers } from "ethers";
 import SubmitClaim from "./SubmitClaim";
 import AllClaims from "./AllClaims";
 import HealthInsurance from "./abi/HealthInsurance.json";
+import './App.css';
+
 
 const contractAddress = "0xCb7B19B5B2D8117e815566A59Fc9596952c17273";
 
